@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JWT\JWTController;
 use App\Http\Controllers\API\Admin\HomeController;
+use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UnitController;
 
@@ -27,6 +28,13 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('unit/update', [UnitController::class, 'update']);
     Route::post('unit/store', [UnitController::class, 'store']);
     Route::delete('unit/delete/{id}', [UnitController::class, 'delete']);
+
+    /* -------- Customer Related Routes -------- */
+    Route::get('customer', [CustomerController::class, 'index']);
+    Route::get('customer/{id}', [CustomerController::class, 'getById']);
+    Route::post('customer/store', [CustomerController::class, 'store']);
+    Route::post('customer/update', [CustomerController::class, 'update']);
+    Route::delete('customer/delete/{id}', [CustomerController::class, 'delete']);
 });
 
 Route::group(['middleware' => ['jwt.verify']], function () {
