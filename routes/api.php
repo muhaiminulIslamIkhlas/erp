@@ -6,6 +6,7 @@ use App\Http\Controllers\JWT\JWTController;
 use App\Http\Controllers\API\Admin\HomeController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\ProductStockController;
 use App\Http\Controllers\API\UnitController;
 
 Route::group(['middleware' => 'api'], function ($router) {
@@ -35,6 +36,13 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('customer/store', [CustomerController::class, 'store']);
     Route::post('customer/update', [CustomerController::class, 'update']);
     Route::delete('customer/delete/{id}', [CustomerController::class, 'delete']);
+
+    /* -------- Product Stock Related Routes -------- */
+    Route::get('productstock', [ProductStockController::class, 'index']);
+    Route::get('productstock/{id}', [ProductStockController::class, 'getById']);
+    Route::post('productstock/store', [ProductStockController::class, 'store']);
+    Route::post('productstock/update', [ProductStockController::class, 'update']);
+    Route::delete('productstock/delete/{id}', [ProductStockController::class, 'delete']);
 });
 
 Route::group(['middleware' => ['jwt.verify']], function () {
