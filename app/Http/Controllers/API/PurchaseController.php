@@ -19,15 +19,22 @@ class PurchaseController extends Controller
             $buying_price = $request->buying_price;
             $commission = $request->commission;
 
-            $available_product = DB::table('product_stocks')->where('product_id', $product_id)->where('buying_price', $buying_price)->first();
+            $available_product = PurchaseHistory::where('')->where('product_id', $product_id)->where('buying_price', $buying_price)->first();
+
+            // $available_product = DB::table('product_stocks')->where('product_id', $product_id)->where('buying_price', $buying_price)->first();
             
             if($available_product->id) {
-               
-                $stored_qty = $available_product->qty;
-                //return response()->json($stored_qty);
-                $updated_data = DB::table('product_stocks')->where('product_id', $product_id)->where('buying_price', $buying_price)->update(['qty', $stored_qty+$qty]);
 
-               return response()->json($updated_data);
+                $available_product->qty = $available_product->qty + $qty;
+                $available_product->save();
+               
+                // $stored_qty = $available_product->qty;
+                // //return response()->json($stored_qty);
+                // $updated_data = DB::table('product_stocks')->where('product_id', $product_id)->where('buying_price', $buying_price)->update(['qty', $stored_qty+$qty]);
+
+            //    return response()->json([
+            //        "message"=>
+            //    ]);
             }
             else {
                 $productStock = new ProductStock();
