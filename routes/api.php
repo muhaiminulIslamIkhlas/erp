@@ -53,7 +53,7 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::delete('seller/delete/{id}', [SellerController::class, 'delete']);
 
     /* ------- Other routes -------- */
-    Route::post('product-purchase', [ProductController::class, 'productSave']);
+    Route::post('product-create', [ProductController::class, 'productSave']);
 });
 
 /**

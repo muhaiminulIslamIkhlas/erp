@@ -10,18 +10,16 @@ class CustomerController extends Controller
 {
     public function storeData(Request $request)
     {
-        if($request->id)
-        {
+        if ($request->id) {
             $customer = Customer::find($request->id);
-        }
-        else {
+        } else {
             $customer = new Customer();
         }
 
         $customer->customer_name = $request->customer_name;
         $customer->customer_phone = $request->customer_phone;
         $customer->customer_address = $request->customer_address;
-        
+
         $customer->save();
     }
 
@@ -35,7 +33,7 @@ class CustomerController extends Controller
                 'data' => $customer
             ], 202);
         } catch (\Throwable $th) {
-           return response()->json($th, 500);
+            return response()->json($th, 500);
         }
     }
 

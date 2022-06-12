@@ -95,7 +95,7 @@ class ProductController extends Controller
                 'buying_price' => 'required',
                 'selling_price' => 'required',
             ]);
-    
+
             $product = new Product();
             $product->product_name = $request->product_name;
             $product->company_name = $request->company_name;
@@ -103,14 +103,14 @@ class ProductController extends Controller
             $product->color = $request->color;
             $product->unit_id = $request->unit_id;
             $product->save();
-    
+
             $productStock = new ProductStock();
             $productStock->product_id = $product->id;
             $productStock->qty = $request->qty;
             $productStock->buying_price = $request->buying_price;
             $productStock->selling_price = $request->selling_price;
             $productStock->save();
-    
+
             return response()->json([
                 'message' => 'Product information saved successfully'
             ], 200);
