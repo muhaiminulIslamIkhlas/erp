@@ -7,6 +7,7 @@ use App\Http\Controllers\API\Admin\HomeController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProductStockController;
+use App\Http\Controllers\API\SellerController;
 use App\Http\Controllers\API\UnitController;
 
 Route::group(['middleware' => 'api'], function ($router) {
@@ -43,6 +44,16 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('productstock/store', [ProductStockController::class, 'store']);
     Route::post('productstock/update', [ProductStockController::class, 'update']);
     Route::delete('productstock/delete/{id}', [ProductStockController::class, 'delete']);
+
+    /* -------- Seller Related Routes -------- */
+    Route::get('seller', [SellerController::class, 'index']);
+    Route::get('seller/{id}', [SellerController::class, 'getById']);
+    Route::post('seller/store', [SellerController::class, 'store']);
+    Route::post('seller/update', [SellerController::class, 'update']);
+    Route::delete('seller/delete/{id}', [SellerController::class, 'delete']);
+
+    /* ------- Other routes -------- */
+    Route::post('product-purchase', [ProductController::class, 'productSave']);
 });
 
 Route::group(['middleware' => ['jwt.verify']], function () {
