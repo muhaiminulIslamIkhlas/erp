@@ -7,6 +7,7 @@ use App\Http\Controllers\API\Admin\HomeController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProductStockController;
+use App\Http\Controllers\API\PurchaseController;
 use App\Http\Controllers\API\SellerController;
 use App\Http\Controllers\API\UnitController;
 
@@ -54,6 +55,7 @@ Route::group(['middleware' => 'api'], function ($router) {
 
     /* ------- Other routes -------- */
     Route::post('product-create', [ProductController::class, 'productSave']);
+    Route::post('product-purchase', [PurchaseController::class, 'purchase']);
 });
 
 /**
