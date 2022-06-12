@@ -56,6 +56,10 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('product-purchase', [ProductController::class, 'productSave']);
 });
 
+/**
+ * Protected routes
+ */
+
 Route::group(['middleware' => ['jwt.verify']], function () {
 
     //     Route::post('logout', 'AuthController@logout');
