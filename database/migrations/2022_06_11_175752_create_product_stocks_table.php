@@ -17,7 +17,7 @@ class CreateProductStocksTable extends Migration
             $table->id();
             $table->integer('qty');
             $table->integer('buying_price');
-            $table->integer('selling_price');
+            $table->integer('selling_price')->nullable();
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();
