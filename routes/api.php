@@ -18,4 +18,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/get-unit','API\UnitController@index');
+/**
+ * Unit
+ */
+Route::get('/get-all-unit','API\UnitController@index');
+
+/**
+ * Account
+ */
+Route::get('/get-all-account','API\AccountController@index');
+Route::get('/get-account-byId/{id}','API\AccountController@getItem');
+Route::get('/delete-account/{id}','API\AccountController@delete');
+Route::post('/create-account','API\AccountController@create');
+Route::post('/edit-account','API\AccountController@edit');
+Route::post('/edit-account','API\AccountController@edit');
