@@ -56,19 +56,28 @@ Route::post('/edit-account','API\AccountController@edit');
 Route::post('/edit-account','API\AccountController@edit');
 
 /**
- * Category
- */
-Route::get('/get-all-category', 'API\CategoryController@index');
-Route::get('/get-category-byId/{id}', 'API\CategoryController@getItem');
-Route::get('/delete-category/{id}', 'API\CategoryController@delete');
-Route::post('/store-category', 'API\CategoryController@store');
-Route::post('/edit-category', 'API\CategoryController@edit');
-
-/**
  * Brand
  */
 Route::get('/get-all-brand', 'API\BrandController@index');
-Route::get('/get-brand-byId/{id}', 'API\BrandController@getItem');
-Route::get('/delete-brand/{id}', 'API\BrandController@delete');
-Route::post('/store-brand', 'API\BrandController@store');
+Route::post('/create-brand', 'API\BrandController@create');
 Route::post('/edit-brand', 'API\BrandController@edit');
+Route::get('/delete-brand/{id}', 'API\BrandController@delete');
+Route::get('/get-brand-byId/{id}', 'API\BrandController@getItem');
+
+/**
+ * Category
+ */
+Route::get('/get-all-category', 'API\CategoryController@index');
+Route::post('/create-category', 'API\CategoryController@create');
+Route::post('/edit-category', 'API\CategoryController@edit');
+Route::get('/delete-category/{id}', 'API\CategoryController@delete');
+Route::get('/get-category-byId/{id}', 'API\CategoryController@getItem');
+
+/**
+ * Supplier
+ */
+Route::get('/get-all-supplier', 'API\SupplierController@index');
+Route::post('/create-supplier', 'API\SupplierController@create');
+Route::post('/edit-supplier', 'API\SupplierController@edit');
+Route::get('/delete-supplier/{id}', 'API\SupplierController@delete');
+Route::get('/get-supplier-byId/{id}', 'API\SupplierController@getItem');

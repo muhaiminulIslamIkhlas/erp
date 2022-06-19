@@ -4,19 +4,20 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Brand;
 use Illuminate\Support\Facades\Validator;
+use App\Supplier;
 
-class BrandController extends Controller
+class SupplierController extends Controller
 {
     public function index(){
         try {
-            $brand = Brand::all();
+            $supplier = Supplier::all();
             
             return response()->json(
                 [
-                    'data' => $brand
-                ], 200
+                    'data' => $supplier
+                ],
+                200
             );
 
         } catch (\Throwable $th) {
@@ -31,21 +32,21 @@ class BrandController extends Controller
 
     public function storeData(Request $request){
         if($request->id){
-            $brand = Brand::find($request->id);
+            $supplier = Supplier::find($request->id);
         } else {
-            $brand = new Brand();
+            $supplier = new Supplier();
         }
-        $brand->store_id = 1;
-        $brand->brand_name = $request->brand_name;
-        $brand->added_by = $request->added_by;
-        $brand->description = $request->description;
-        $brand->save();
+        $supplier->store_id = 1;
+        $supplier->supplier_name = $request->supplier_name;
+        $supplier->supplier_phone = $request->supplier_phone;
+        $supplier->supplier_address = $request->supplier_address;
+        $supplier->save();
     }
 
     public function create(Request $request){
         $validatedData = Validator::make($request->all(), [
-            'brand_name' => 'required|max:255',
-            'added_by' => 'required',
+            'supplier_name' => 'required|max:255',
+            'supplier_phone' => 'required',
         ]);
 
         if ($validatedData->fails()) {
@@ -80,8 +81,8 @@ class BrandController extends Controller
 
     public function edit(Request $request){
         $validatedData = Validator::make($request->all(), [
-            'brand_name' => 'required|max:255',
-            'added_by' => 'required',
+            'supplier_name' => 'required|max:255',
+            'supplier_phone' => 'required',
             'id' => 'required'
         ]);
 
@@ -118,8 +119,8 @@ class BrandController extends Controller
 
     public function delete($id){
         try {
-            $brand = Brand::find($id);
-            $brand->delete();
+            $supplier = Supplier::find($id);
+            $supplier->delete();
 
             return response()->json(
                 [
@@ -141,11 +142,11 @@ class BrandController extends Controller
 
     public function getItem($id){
         try {
-            $brand = Brand::find($id);
+            $supplier = Supplier::find($id);
 
             return response()->json(
                 [
-                    'data' => $brand
+                    'data' => $supplier
                 ],
                 200
             );
