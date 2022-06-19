@@ -19,9 +19,31 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 /**
+ * Customer
+ */
+Route::get('/get-all-customer', 'API\CustomerController@index');
+Route::get('/get-customer-byId/{id}','API\CustomerController@getItem');
+Route::post('/store-customer', 'API\CustomerController@store');
+Route::post('/edit-customer', 'API\CustomerController@edit');
+Route::delete('/delete-customer//{id}', 'API\CustomerController@delete');
+
+/**
+ * Product
+ */
+Route::get('/get-all-product', 'API\ProductController@index');
+Route::get('/get-product-byId/{id}','API\ProductController@getItem');
+Route::post('/store-product', 'API\ProductController@store');
+Route::post('/edit-product', 'API\ProductController@edit');
+Route::delete('/delete-product//{id}', 'API\ProductController@delete');
+
+/**
  * Unit
  */
 Route::get('/get-all-unit','API\UnitController@index');
+Route::get('/get-unit-byId/{id}', 'API\UnitController@getItem');
+Route::post('/edit-unit', 'API\UnitController@edit');
+Route::post('/store-unit', 'API\UnitController@store');
+Route::delete('/delete-unit/{id}', 'API\UnitController@delete');
 
 /**
  * Account

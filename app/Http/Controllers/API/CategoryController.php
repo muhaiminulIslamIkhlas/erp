@@ -10,6 +10,7 @@ use App\Category;
 
 class CategoryController extends Controller
 {
+<<<<<<< HEAD
     public function index(){
         try {
             $category = Category::all();
@@ -161,4 +162,11 @@ class CategoryController extends Controller
             );
         }
     }
+=======
+    public function index() {}
+    public function store() {}
+    public function getItem() {}
+    public function update() {}
+    public function delete() {}
+>>>>>>> 191c1049733cc84d0b7a4eb4445ac80675f0a703
 }
