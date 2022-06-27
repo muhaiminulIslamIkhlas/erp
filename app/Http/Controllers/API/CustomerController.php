@@ -19,15 +19,17 @@ class CustomerController extends Controller
         $customer->customer_name = $request->customer_name;
         $customer->customer_phone = $request->customer_phone;
         $customer->customer_address = $request->customer_address;
+        $customer->added_by = "Admin";
+        $customer->store_id = 1;
 
         $customer->save();
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
 
-            $customer = Customer::all();
+            $customer = Customer::orderBy('id', 'desc')->paginate($request->get('perPage'), ['customer_name', 'customer_phone', 'customer_address', 'id'], 'page');
 
             return response()->json([
                 'data' => $customer
@@ -56,11 +58,21 @@ class CustomerController extends Controller
 
             $this->storeData($request);
 
-            return response()->json([
-                'message' => 'Customer Saved Successfully'
-            ], 200);
+            return response()->json(
+                [
+                    'data' => 'Inserted successfully'
+                ],
+                200
+            );
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return response()->json(
+                [
+                    'data' => [
+                        'error' => $th->getMessage()
+                    ]
+                ],
+                500
+            );
         }
     }
 
@@ -70,11 +82,21 @@ class CustomerController extends Controller
 
             $this->storeData($request);
 
-            return response()->json([
-                'message' => 'Customer Updated Successfully'
-            ], 200);
+            return response()->json(
+                [
+                    'data' => 'Updated successfully'
+                ],
+                200
+            );
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return response()->json(
+                [
+                    'data' => [
+                        'error' => $th->getMessage()
+                    ]
+                ],
+                500
+            );
         }
     }
 
@@ -85,10 +107,19 @@ class CustomerController extends Controller
             $customer->delete();
 
             return response()->json([
-                'message' => 'Customer Deleted Successfully'
+                'data' => [
+                    'message' => 'Customer Deleted Successfully'
+                ]
             ], 200);
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return response()->json(
+                [
+                    'data' => [
+                        'error' => $th->getMessage()
+                    ]
+                ],
+                500
+            );
         }
     }
 }

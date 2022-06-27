@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $account = Account::all();
+            $account = Account::orderBy('id', 'desc')->paginate($request->get('perPage'), ['*'], 'page');
             return response()->json(
                 [
                     'data' => $account
@@ -67,7 +67,7 @@ class AccountController extends Controller
         if ($validatedData->fails()) {
             return response()->json([
                 'data' => [
-                    'error' => $validatedData->errors()
+                    'error' => $validatedData->errors()->toArray()
                 ]
             ], 400);
         }

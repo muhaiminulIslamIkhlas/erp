@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Validator;
 
 class BrandController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         try {
-            $brand = Brand::all();
+            $brand = Brand::orderBy('id', 'desc')->paginate($request->get('perPage'), ['brand_name','description','id'], 'page');
             
             return response()->json(
                 [
@@ -37,15 +37,14 @@ class BrandController extends Controller
         }
         $brand->store_id = 1;
         $brand->brand_name = $request->brand_name;
-        $brand->added_by = $request->added_by;
+        $brand->added_by = "Admin";
         $brand->description = $request->description;
         $brand->save();
     }
 
     public function create(Request $request){
         $validatedData = Validator::make($request->all(), [
-            'brand_name' => 'required|max:255',
-            'added_by' => 'required',
+            'brand_name' => 'required|max:255'
         ]);
 
         if ($validatedData->fails()) {

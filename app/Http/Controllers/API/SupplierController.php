@@ -9,9 +9,9 @@ use App\Supplier;
 
 class SupplierController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         try {
-            $supplier = Supplier::all();
+            $supplier = Supplier::orderBy('id', 'desc')->paginate($request->get('perPage'), ['supplier_name','supplier_phone','supplier_address','id'], 'page');
             
             return response()->json(
                 [
@@ -122,12 +122,11 @@ class SupplierController extends Controller
             $supplier = Supplier::find($id);
             $supplier->delete();
 
-            return response()->json(
-                [
-                    'data' => 'Deleted Successfully'
-                ],
-                200
-            );
+            return response()->json([
+                'data' => [
+                    'message' => 'Supplier Deleted Successfully'
+                ]
+            ], 200);
         } catch(\Throwable $th){
             return response()->json(
                 [

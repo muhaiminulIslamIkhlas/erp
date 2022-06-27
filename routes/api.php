@@ -14,18 +14,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 /**
  * Customer
+ * Front end done
  */
 Route::get('/get-all-customer', 'API\CustomerController@index');
 Route::get('/get-customer-byId/{id}','API\CustomerController@getItem');
 Route::post('/store-customer', 'API\CustomerController@store');
 Route::post('/edit-customer', 'API\CustomerController@edit');
-Route::delete('/delete-customer//{id}', 'API\CustomerController@delete');
+Route::get('/delete-customer/{id}', 'API\CustomerController@delete');
 
 /**
  * Product
@@ -34,19 +35,22 @@ Route::get('/get-all-product', 'API\ProductController@index');
 Route::get('/get-product-byId/{id}','API\ProductController@getItem');
 Route::post('/store-product', 'API\ProductController@store');
 Route::post('/edit-product', 'API\ProductController@edit');
-Route::delete('/delete-product//{id}', 'API\ProductController@delete');
+Route::get('/delete-product//{id}', 'API\ProductController@delete');
 
 /**
  * Unit
+ * Front end done
  */
 Route::get('/get-all-unit','API\UnitController@index');
 Route::get('/get-unit-byId/{id}', 'API\UnitController@getItem');
-Route::post('/edit-unit', 'API\UnitController@edit');
+Route::post('/edit-unit', 'API\UnitController@update');
 Route::post('/store-unit', 'API\UnitController@store');
-Route::delete('/delete-unit/{id}', 'API\UnitController@delete');
+Route::post('/unit-search', 'API\UnitController@search');
+Route::get('/delete-unit/{id}', 'API\UnitController@delete');
 
 /**
  * Account
+ * Front end done
  */
 Route::get('/get-all-account','API\AccountController@index');
 Route::get('/get-account-byId/{id}','API\AccountController@getItem');
@@ -57,6 +61,7 @@ Route::post('/edit-account','API\AccountController@edit');
 
 /**
  * Brand
+ * Front end done
  */
 Route::get('/get-all-brand', 'API\BrandController@index');
 Route::post('/create-brand', 'API\BrandController@create');
@@ -66,6 +71,7 @@ Route::get('/get-brand-byId/{id}', 'API\BrandController@getItem');
 
 /**
  * Category
+ * Front-end done
  */
 Route::get('/get-all-category', 'API\CategoryController@index');
 Route::post('/create-category', 'API\CategoryController@create');

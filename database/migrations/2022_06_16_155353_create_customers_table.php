@@ -17,8 +17,8 @@ class CreateCustomersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('store_id');
             $table->string('customer_name');
-            $table->string('phone')->unique();
-            $table->string('address')->nullable();
+            $table->string('customer_phone')->unique();
+            $table->string('customer_address')->nullable();
             $table->string('added_by');
             $table->timestamps();
         });

@@ -10,10 +10,9 @@ use App\Category;
 
 class CategoryController extends Controller
 {
-<<<<<<< HEAD
-    public function index(){
+    public function index(Request $request){
         try {
-            $category = Category::all();
+            $category = Category::orderBy('id', 'desc')->paginate($request->get('perPage'), ['category_name','id','description'], 'page');
             
             return response()->json(
                 [
@@ -39,7 +38,7 @@ class CategoryController extends Controller
         }
         $category->store_id = 1;
         $category->category_name = $request->category_name;
-        $category->added_by = $request->added_by;
+        $category->added_by = "Admin";
         $category->description = $request->description;
         $category->save();
     }
@@ -47,7 +46,6 @@ class CategoryController extends Controller
     public function create(Request $request){
         $validatedData = Validator::make($request->all(), [
             'category_name' => 'required|max:255',
-            'added_by' => 'required',
         ]);
 
         if ($validatedData->fails()) {
@@ -162,11 +160,4 @@ class CategoryController extends Controller
             );
         }
     }
-=======
-    public function index() {}
-    public function store() {}
-    public function getItem() {}
-    public function update() {}
-    public function delete() {}
->>>>>>> 191c1049733cc84d0b7a4eb4445ac80675f0a703
 }

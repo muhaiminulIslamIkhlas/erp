@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $product = Product::all();
+        $product = Product::orderBy('id', 'desc')->paginate($request->get('perPage'), ['supplier_name','supplier_phone','supplier_address','id'], 'page');
 
         return response()->json([
             'data' => $product
