@@ -29,6 +29,25 @@ class BrandController extends Controller
         }
     }
 
+    public function getAll()
+    {
+        try {
+            $brand = Brand::select('brand_name','id')->orderBy('id', 'desc')->where('store_id',1)->get()->map->formatSelect();
+            return response()->json(
+                [
+                    'data' => $brand
+                ], 200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
+                ],
+                500
+            );
+        }
+    }
+
     public function storeData(Request $request){
         if($request->id){
             $brand = Brand::find($request->id);

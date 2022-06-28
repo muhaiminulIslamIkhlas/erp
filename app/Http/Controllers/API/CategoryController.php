@@ -10,16 +10,17 @@ use App\Category;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         try {
-            $category = Category::orderBy('id', 'desc')->paginate($request->get('perPage'), ['category_name','id','description'], 'page');
-            
+            $category = Category::orderBy('id', 'desc')->paginate($request->get('perPage'), ['category_name', 'id', 'description'], 'page');
+
             return response()->json(
                 [
                     'data' => $category
-                ], 200
+                ],
+                200
             );
-
         } catch (\Throwable $th) {
             return response()->json(
                 [
@@ -30,8 +31,9 @@ class CategoryController extends Controller
         }
     }
 
-    public function storeData(Request $request){
-        if($request->id){
+    public function storeData(Request $request)
+    {
+        if ($request->id) {
             $category = Category::find($request->id);
         } else {
             $category = new Category();
@@ -43,7 +45,8 @@ class CategoryController extends Controller
         $category->save();
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $validatedData = Validator::make($request->all(), [
             'category_name' => 'required|max:255',
         ]);
@@ -65,7 +68,6 @@ class CategoryController extends Controller
                 ],
                 200
             );
-
         } catch (\Throwable $th) {
             return response()->json(
                 [
@@ -78,7 +80,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function edit(Request $request){
+    public function edit(Request $request)
+    {
         $validatedData = Validator::make($request->all(), [
             'category_name' => 'required|max:255',
             'added_by' => 'required',
@@ -102,7 +105,6 @@ class CategoryController extends Controller
                 ],
                 200
             );
-
         } catch (\Throwable $th) {
             return response()->json(
                 [
@@ -113,10 +115,10 @@ class CategoryController extends Controller
                 500
             );
         }
-
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         try {
             $category = Category::find($id);
             $category->delete();
@@ -127,7 +129,7 @@ class CategoryController extends Controller
                 ],
                 200
             );
-        } catch(\Throwable $th){
+        } catch (\Throwable $th) {
             return response()->json(
                 [
                     'data' => [
@@ -139,7 +141,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function getItem($id){
+    public function getItem($id)
+    {
         try {
             $category = Category::find($id);
 
@@ -155,6 +158,26 @@ class CategoryController extends Controller
                     'data' => [
                         'error' => $th->getMessage()
                     ]
+                ],
+                500
+            );
+        }
+    }
+
+    public function getAll()
+    {
+        try {
+            $unit = Category::select('category_name', 'id')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
+            return response()->json(
+                [
+                    'data' => $unit
+                ],
+                200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
                 ],
                 500
             );

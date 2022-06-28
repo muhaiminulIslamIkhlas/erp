@@ -58,6 +58,25 @@ class UnitController extends Controller
         }
     }
 
+    public function getAll()
+    {
+        try {
+            $unit = Unit::select('unit_name','id')->orderBy('id', 'desc')->where('store_id',1)->get()->map->formatSelect();
+            return response()->json(
+                [
+                    'data' => $unit
+                ], 200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
+                ],
+                500
+            );
+        }
+    }
+
     public function getById($id)
     {
         try {
