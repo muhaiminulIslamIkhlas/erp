@@ -58,12 +58,11 @@ class CustomerController extends Controller
 
             $this->storeData($request);
 
-            return response()->json(
-                [
-                    'data' => 'Inserted successfully'
-                ],
-                200
-            );
+            return response()->json([
+                'data' => [
+                    'message' => 'Customer Added Successfully'
+                ]
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json(
                 [
@@ -117,6 +116,26 @@ class CustomerController extends Controller
                     'data' => [
                         'error' => $th->getMessage()
                     ]
+                ],
+                500
+            );
+        }
+    }
+
+    public function getAll()
+    {
+        try {
+            $brand = Customer::select('customer_name', 'customer_phone', 'id')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
+            return response()->json(
+                [
+                    'data' => $brand
+                ],
+                200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
                 ],
                 500
             );

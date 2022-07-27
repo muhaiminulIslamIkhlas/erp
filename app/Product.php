@@ -24,11 +24,20 @@ class Product extends Model
     public function format()
     {
         return [
+            'id' => $this->id,
             'product_name' => $this->product_name,
             'selling_price' => $this->selling_price,
             'initial_stock' => $this->initial_stock,
-            'brand' => $this->brand->brand_name,
-            'category'=>$this->category->category_name,
+            'brand' => $this->brand->brand_name?? '',
+            'category' => $this->category->category_name ?? '',
+        ];
+    }
+
+    public function formatSelect()
+    {
+        return [
+            'value' => $this->id,
+            'label' => $this->product_name
         ];
     }
 }

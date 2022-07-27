@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Product;
+use App\ProductStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +12,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $product =tap( Product::orderBy('id', 'desc')->paginate($request->get('perPage'), ['*'], 'page'),function($data){
+        $product = tap(Product::orderBy('id', 'desc')->paginate($request->get('perPage'), ['*'], 'page'), function ($data) {
             return $data->getCollection()->transform(function ($value) {
                 return $value->format();
             });
@@ -30,8 +31,20 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function addStock(ProductStock $productStock)
+    {
+        $item = ProductStock::where('purchase_price', $productStock->purchase_price)->where('product_id', $productStock->product_id)->first();
+        if ($item) {
+            $item->stock += $productStock->stock;
+            $item->save();
+        } else {
+            $productStock->save();
+        }
+    }
+
     public function storeData(Request $request)
     {
+
         if ($request->id) {
             $product = Product::find($request->id);
         } else {
@@ -52,6 +65,13 @@ class ProductController extends Controller
         $product->available_for_online = 0;
         $product->store_id = 1;
         $product->save();
+
+        $productStock = new ProductStock();
+        $productStock->product_id = $product->id;
+        $productStock->purchase_price = $request->purchase_price;
+        $productStock->stock = $request->initial_stock;
+        $productStock->selling_price = $request->selling_price;
+        $this->addStock($productStock);
     }
 
     public function store(Request $request)
@@ -138,6 +158,46 @@ class ProductController extends Controller
             ], 200);
         } catch (\Throwable $th) {
             return response()->json($th, 500);
+        }
+    }
+
+    public function getAll()
+    {
+        try {
+            $product = Product::select('product_name', 'id')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
+            return response()->json(
+                [
+                    'data' => $product
+                ],
+                200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
+                ],
+                500
+            );
+        }
+    }
+
+    public function getAllRaw()
+    {
+        try {
+            $product = Product::orderBy('id', 'desc')->where('store_id', 1)->get()->map->format();
+            return response()->json(
+                [
+                    'data' => $product
+                ],
+                200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
+                ],
+                500
+            );
         }
     }
 }

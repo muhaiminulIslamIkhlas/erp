@@ -25,9 +25,9 @@ class CreateProductsTable extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->string('size')->nullable();
             $table->string('color')->nullable();
-            $table->decimal('purchase_price');
-            $table->decimal('selling_price');
-            $table->decimal('initial_stock')->default(0);
+            $table->decimal('purchase_price',10,2);
+            $table->decimal('selling_price',10,2);
+            $table->decimal('initial_stock',10,2)->default(0);
             $table->string('warrenty')->nullable();
             $table->string('guarantee')->nullable();
             $table->string('description')->nullable();

@@ -141,4 +141,23 @@ class AccountController extends Controller
             ], 500);
         }
     }
+
+    public function getAll()
+    {
+        try {
+            $account = Account::select('*')->orderBy('id', 'desc')->where('store_id',1)->get()->map->formatSelect();
+            return response()->json(
+                [
+                    'data' => $account
+                ], 200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
+                ],
+                500
+            );
+        }
+    }
 }

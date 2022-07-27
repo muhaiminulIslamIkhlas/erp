@@ -17,7 +17,7 @@ class CreateAccountsTable extends Migration
             $table->id();
             $table->string('account_name');
             $table->string('account_description')->nullable();
-            $table->decimal('current_balance',10,2)->default(0);
+            $table->decimal('current_balance',12,2)->default(0);
             $table->unsignedBigInteger('store_id');
             $table->timestamps();
         });

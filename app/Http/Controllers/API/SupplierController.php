@@ -160,4 +160,23 @@ class SupplierController extends Controller
             );
         }
     }
+
+    public function getAll()
+    {
+        try {
+            $brand = Supplier::select('supplier_name','supplier_phone','id')->orderBy('id', 'desc')->where('store_id',1)->get()->map->formatSelect();
+            return response()->json(
+                [
+                    'data' => $brand
+                ], 200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
+                ],
+                500
+            );
+        }
+    }
 }
