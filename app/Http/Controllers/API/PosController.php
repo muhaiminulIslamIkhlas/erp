@@ -43,8 +43,10 @@ class PosController extends Controller
 
             //Sells Item
             $stockOutProduct = [];
+            $productCart = [];
             foreach ($request->items as $item) {
                 $product = Product::find($item['product_id']);
+                $productCart[$item['product_id']] = $product;
                 $productStock = ProductStock::where('product_id', $item['product_id'])->sum('stock');
                 if ($item['qty'] > $productStock) {
                     $rollbacDb = true;
@@ -57,23 +59,25 @@ class PosController extends Controller
 
                 $totalBuyingPrice = 0;
                 $qty = $item['qty'];
-                $products = ProductStock::where('product_id', $item['product_id'])->get();
-                foreach ($products as $item) {
+                $productStocks = ProductStock::where('product_id', $item['product_id'])->get();
+                foreach ($productStocks as $productStock) {
                     if (!$qty) {
                         break;
                     }
-                    $prevStock = $item->stock;
-                    if ($item->stock <= $qty) {
-                        $item->stock -=  $qty;
-                        $totalBuyingPrice += $item->purchase_price * $qty;
-                        $item->save();
+                    $prevStock = $productStock->stock;
+                    if ($productStock->stock <= $qty) {
+                        $productStock->stock =  0;
+                        $totalBuyingPrice += $productStock->purchase_price * $qty;
+                        $productStock->save();
                         $qty -= $prevStock;
-                        $item->save();
-                    } else {
-                        $item->stock -= $qty;
-                        $totalBuyingPrice += $item->purchase_price * $qty;
-                        $item->save();
+                        $productStock->save();
+                        
+                    } else {  
+                        $productStock->stock -= $qty;
+                        $totalBuyingPrice += $productStock->purchase_price * $qty;
+                        $productStock->save();
                         $qty = 0;
+                        
                     }
                 }
 
@@ -86,7 +90,7 @@ class PosController extends Controller
                 $sellsItem->price = $item['price'];
                 $sellsItem->total_selling_price = $item['total'];
                 $sellsItem->total_buying_price = $totalBuyingPrice;
-                $product->save();
+                $sellsItem->save();
             }
 
             if ($rollbacDb) {
@@ -108,6 +112,8 @@ class PosController extends Controller
                     'message' => 'Sell completed Successfully',
                     'invoice_no' => $sell->sell_number,
                     'stockedOutProduct' => $stockOutProduct,
+                    'cart_item' => $productCart,
+                    'customer' => $customer,
                     'error' => false,
                 ]
             ], 200);

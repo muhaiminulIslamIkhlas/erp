@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/store-customer', 'API\CustomerController@store');
     Route::post('/edit-customer', 'API\CustomerController@edit');
     Route::get('/delete-customer/{id}', 'API\CustomerController@delete');
+    Route::get('/get-previous-due/{id}','API\CustomerController@getPreviousDue');
 
     /**
      * Product

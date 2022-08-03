@@ -167,10 +167,10 @@ class CategoryController extends Controller
     public function getAll()
     {
         try {
-            $unit = Category::select('category_name', 'id')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
+            $category = Category::select('category_name', 'id')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
             return response()->json(
                 [
-                    'data' => $unit
+                    'data' => $category
                 ],
                 200
             );
@@ -183,4 +183,5 @@ class CategoryController extends Controller
             );
         }
     }
+
 }

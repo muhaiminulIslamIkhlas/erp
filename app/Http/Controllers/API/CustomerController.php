@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Customer;
+use App\Sell;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -129,6 +131,26 @@ class CustomerController extends Controller
             return response()->json(
                 [
                     'data' => $brand
+                ],
+                200
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'error' => $th->getMessage()
+                ],
+                500
+            );
+        }
+    }
+
+    public function getPreviousDue($id)
+    {
+        try {
+            $previousDue = Sell::where('customer_id', $id)->sum('due');
+            return response()->json(
+                [
+                    'data' => $previousDue
                 ],
                 200
             );
