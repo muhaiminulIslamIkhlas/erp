@@ -5,12 +5,12 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Purchase;
 use App\PurchaseDetail;
-use App\Traits\PurchaseTrait;
+use App\Traits\purchaseTrait;
 use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
 {
-    use PurchaseTrait;
+    use purchaseTrait;
 
     public function index(Request $request)
     {
