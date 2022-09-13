@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Purchase;
 use App\PurchaseDetail;
 use App\Traits\purchaseTrait;
+use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
 {
     use purchaseTrait;
+    use ResponseTrait;
 
     public function index(Request $request)
     {
@@ -20,9 +22,7 @@ class PurchaseController extends Controller
             });
         });
 
-        return response()->json([
-            'data' => $purchase
-        ], 202);
+        return $this->success($purchase);
     }
 
     public function makePurchase(Request $request)
@@ -30,22 +30,11 @@ class PurchaseController extends Controller
         try {
             $message = $this->purchase($request);
             if ($message['error']) {
-                return response()->json([
-                    'error' => $message['message']
-                ], 500);
+                return $this->failure($message['message']);
             }
-            return response()->json(
-                [
-                    'data' => [
-                        'message' => $message['message']
-                    ]
-                ],
-                200
-            );
+            return $this->success(null, $message['message']);
         } catch (\Throwable $th) {
-            return response()->json([
-                'error' => $th->getMessage()
-            ], 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -53,13 +42,9 @@ class PurchaseController extends Controller
     {
         try {
             $purchaseDetails = Purchase::where('id', $id)->with('details')->first()->formatDetails();
-            return response()->json([
-                'data' => $purchaseDetails
-            ], 202);
+            return $this->success($purchaseDetails);
         } catch (\Throwable $th) {
-            return response()->json([
-                'error' => $th->getMessage()
-            ], 500);
+            return $this->failure($th->getMessage());
         }
     }
 }

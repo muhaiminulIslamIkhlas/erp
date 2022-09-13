@@ -6,28 +6,19 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Category;
-
+use App\Traits\ResponseTrait;
 
 class CategoryController extends Controller
 {
+    use ResponseTrait;
+
     public function index(Request $request)
     {
         try {
             $category = Category::orderBy('id', 'desc')->paginate($request->get('perPage'), ['category_name', 'id', 'description'], 'page');
-
-            return response()->json(
-                [
-                    'data' => $category
-                ],
-                200
-            );
+            return $this->success($category);
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'error' => $th->getMessage()
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -52,31 +43,14 @@ class CategoryController extends Controller
         ]);
 
         if ($validatedData->fails()) {
-            return response()->json([
-                'data' => [
-                    'error' => $validatedData->errors()
-                ]
-            ], 400);
+            return $this->failure($validatedData->errors()->toArray());
         }
 
         try {
             $this->storeData($request);
-
-            return response()->json(
-                [
-                    'data' => 'Inserted successfully'
-                ],
-                200
-            );
+            return $this->success(null, 'Inserted successfully');
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'data' => [
-                        'error' => $th->getMessage()
-                    ]
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -89,31 +63,14 @@ class CategoryController extends Controller
         ]);
 
         if ($validatedData->fails()) {
-            return response()->json([
-                'data' => [
-                    'error' => $validatedData->errors()
-                ]
-            ], 400);
+            return $this->failure($validatedData->errors()->toArray());
         }
 
         try {
             $this->storeData($request);
-
-            return response()->json(
-                [
-                    'data' => 'Updated successfully'
-                ],
-                200
-            );
+            return $this->success(null, 'Updated Successfully');
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'data' => [
-                        'error' => $th->getMessage()
-                    ]
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -122,22 +79,9 @@ class CategoryController extends Controller
         try {
             $category = Category::find($id);
             $category->delete();
-
-            return response()->json(
-                [
-                    'data' => 'Deleted Successfully'
-                ],
-                200
-            );
+            return $this->success(null, 'Deleted Successfully');
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'data' => [
-                        'error' => $th->getMessage()
-                    ]
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -145,22 +89,9 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::find($id);
-
-            return response()->json(
-                [
-                    'data' => $category
-                ],
-                200
-            );
+            return $this->success($category);
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'data' => [
-                        'error' => $th->getMessage()
-                    ]
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -168,19 +99,9 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::select('category_name', 'id')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
-            return response()->json(
-                [
-                    'data' => $category
-                ],
-                200
-            );
+            return $this->success($category);
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'error' => $th->getMessage()
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 

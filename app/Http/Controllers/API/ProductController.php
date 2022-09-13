@@ -5,11 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Product;
 use App\ProductStock;
+use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
+    use ResponseTrait;
+
     public function index(Request $request)
     {
         $product = tap(Product::orderBy('id', 'desc')->paginate($request->get('perPage'), ['*'], 'page'), function ($data) {
@@ -18,17 +21,13 @@ class ProductController extends Controller
             });
         });
 
-        return response()->json([
-            'data' => $product
-        ], 202);
+        return $this->success($product);
     }
 
     public function getItem($id)
     {
         $product = Product::find($id);
-        return response()->json([
-            'data' => $product
-        ], 200);
+        return $this->success($product);
     }
 
     public function addStock(ProductStock $productStock)
@@ -65,13 +64,14 @@ class ProductController extends Controller
         $product->available_for_online = 0;
         $product->store_id = 1;
         $product->save();
-
-        $productStock = new ProductStock();
-        $productStock->product_id = $product->id;
-        $productStock->purchase_price = $request->purchase_price;
-        $productStock->stock = $request->initial_stock;
-        $productStock->selling_price = $request->selling_price;
-        $this->addStock($productStock);
+        if (!$request->id) {
+            $productStock = new ProductStock();
+            $productStock->product_id = $product->id;
+            $productStock->purchase_price = $request->purchase_price;
+            $productStock->stock = $request->initial_stock;
+            $productStock->selling_price = $request->selling_price;
+            $this->addStock($productStock);
+        }
     }
 
     public function store(Request $request)
@@ -87,23 +87,24 @@ class ProductController extends Controller
         ]);
 
         if ($validatedData->fails()) {
-            return response()->json([
-                'data' => [
-                    'error' => $validatedData->errors()->toArray()
-                ]
-            ], 422);
+            return $this->failure($validatedData->errors()->toArray());
         }
-
 
         try {
             $this->storeData($request);
-            return response()->json([
-                'data' => [
-                    'message' => 'Product saved successfully'
-                ]
-            ], 200);
+            return $this->success(null, 'Inserted successfully');
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return $this->failure($th->getMessage());
+        }
+    }
+
+    public function getProductById($id)
+    {
+        try {
+            $product = Product::find($id);
+            return $this->success($product);
+        } catch (\Throwable $th) {
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -111,11 +112,9 @@ class ProductController extends Controller
     {
         try {
             $this->storeData($request);
-            return response()->json([
-                'message' => 'Product updated successfully'
-            ], 200);
+            return $this->success(null, 'Updated Successfully');
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -124,26 +123,26 @@ class ProductController extends Controller
         try {
             $product = Product::find($id);
             $product->delete();
-            return response()->json([
-                'data' => [
-                    'message' => 'Product Deleted Successfully'
-                ]
-            ], 200);
+            return $this->success(null, 'Deleted Successfully');
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage(), 500);
+            return $this->failure($th->getMessage());
         }
     }
 
     public function productSave(Request $request)
     {
         try {
-            $validatedData = $request->validate([
+            $validatedData = Validator::make($request->all(), [
                 'product_name' => 'required',
                 'company_name' => 'required',
                 'size' => 'required',
                 'color' => 'required',
                 'unit_id' => 'required',
             ]);
+
+            if ($validatedData->fails()) {
+                return $this->failure($validatedData->errors()->toArray());
+            }
 
             $product = new Product();
             $product->product_name = $request->product_name;
@@ -153,11 +152,9 @@ class ProductController extends Controller
             $product->unit_id = $request->unit_id;
             $product->save();
 
-            return response()->json([
-                'message' => 'Product information saved successfully'
-            ], 200);
+            return $this->success(null, 'Inserted successfully');
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -165,19 +162,9 @@ class ProductController extends Controller
     {
         try {
             $product = Product::select('product_name', 'id')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
-            return response()->json(
-                [
-                    'data' => $product
-                ],
-                200
-            );
+            return $this->success($product);
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'error' => $th->getMessage()
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -185,19 +172,9 @@ class ProductController extends Controller
     {
         try {
             $product = Product::orderBy('id', 'desc')->where('store_id', 1)->get()->map->format();
-            return response()->json(
-                [
-                    'data' => $product
-                ],
-                200
-            );
+            return $this->success($product);
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'error' => $th->getMessage()
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 }

@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/store-product', 'API\ProductController@store');
     Route::post('/edit-product', 'API\ProductController@edit');
     Route::get('/delete-product/{id}', 'API\ProductController@delete');
+    Route::get('/product-edit/{id}', 'API\ProductController@getProductById');
 
     /**
      * Unit

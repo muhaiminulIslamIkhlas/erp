@@ -4,25 +4,21 @@ namespace App\Http\Controllers\API;
 
 use App\Account;
 use App\Http\Controllers\Controller;
+use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
 {
+    use ResponseTrait;
+
     public function index(Request $request)
     {
         try {
             $account = Account::orderBy('id', 'desc')->paginate($request->get('perPage'), ['*'], 'page');
-            return response()->json(
-                [
-                    'data' => $account
-                ],
-                200
-            );
+            return $this->success($account);
         } catch (\Throwable $th) {
-            return response()->json([
-                'error' => $th->getMessage()
-            ], 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -30,16 +26,9 @@ class AccountController extends Controller
     {
         try {
             $account = Account::find($id);
-            return response()->json(
-                [
-                    'data' => $account
-                ],
-                200
-            );
+            return $this->success($account);
         } catch (\Throwable $th) {
-            return response()->json([
-                'error' => $th->getMessage()
-            ], 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -65,27 +54,14 @@ class AccountController extends Controller
         ]);
 
         if ($validatedData->fails()) {
-            return response()->json([
-                'data' => [
-                    'error' => $validatedData->errors()->toArray()
-                ]
-            ], 400);
+            return $this->failure($validatedData->errors()->toArray());
         }
 
         try {
             $this->storeData($request);
-            return response()->json(
-                [
-                    'data' => [
-                        'message' => 'inserted successfully'
-                    ]
-                ],
-                200
-            );
+            return $this->success(null, 'Inserted successfully');
         } catch (\Throwable $th) {
-            return response()->json([
-                'error' => $th->getMessage()
-            ], 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -98,27 +74,14 @@ class AccountController extends Controller
         ]);
 
         if ($validatedData->fails()) {
-            return response()->json([
-                'data' => [
-                    'error' => $validatedData->errors()
-                ]
-            ], 400);
+            return $this->failure($validatedData->errors()->toArray());
         }
 
         try {
             $this->storeData($request);
-            return response()->json(
-                [
-                    'data' => [
-                        'message' => 'updated successfully'
-                    ]
-                ],
-                200
-            );
+            return $this->success(null, 'Updated Successfully');
         } catch (\Throwable $th) {
-            return response()->json([
-                'error' => $th->getMessage()
-            ], 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -127,37 +90,19 @@ class AccountController extends Controller
         try {
             $account = Account::find($id);
             $account->delete();
-            return response()->json(
-                [
-                    'data' => [
-                        'message' => 'deleted successfully'
-                    ]
-                ],
-                200
-            );
+            return $this->success(null, 'Deleted Successfully');
         } catch (\Throwable $th) {
-            return response()->json([
-                'error' => $th->getMessage()
-            ], 500);
+            return $this->failure($th->getMessage());
         }
     }
 
     public function getAll()
     {
         try {
-            $account = Account::select('*')->orderBy('id', 'desc')->where('store_id',1)->get()->map->formatSelect();
-            return response()->json(
-                [
-                    'data' => $account
-                ], 200
-            );
+            $account = Account::select('*')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
+            return $this->success($account);
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'error' => $th->getMessage()
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 }

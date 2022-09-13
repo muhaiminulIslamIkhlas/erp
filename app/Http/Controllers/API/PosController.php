@@ -9,11 +9,14 @@ use App\Product;
 use App\ProductStock;
 use App\Sell;
 use App\SellItems;
+use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PosController extends Controller
 {
+    use ResponseTrait;
+
     public function sell(Request $request)
     {
         DB::beginTransaction();
@@ -37,21 +40,21 @@ class PosController extends Controller
             $sell->account_id = $request->payment['paymentMethod'];
             $sell->save();
 
-            //Increment Account
+            /**Increment Account*/
             $account->current_balance += $request->total;
             $account->save();
 
-            //Sells Item
+            /**Sells Item*/
             $stockOutProduct = [];
             $productCart = [];
             foreach ($request->items as $item) {
-                $product = Product::find($item['product_id']);
+                $product = Product::find($item['product_id'])->posFormate();
                 $productCart[$item['product_id']] = $product;
                 $productStock = ProductStock::where('product_id', $item['product_id'])->sum('stock');
                 if ($item['qty'] > $productStock) {
                     $rollbacDb = true;
                     $stockOutProduct[] = [
-                        'product_name' => $product->product_name,
+                        'product_name' => $product['product_name'],
                         'qty' => $productStock
                     ];
                     continue;
@@ -71,20 +74,20 @@ class PosController extends Controller
                         $productStock->save();
                         $qty -= $prevStock;
                         $productStock->save();
-                        
-                    } else {  
+
+                    } else {
                         $productStock->stock -= $qty;
                         $totalBuyingPrice += $productStock->purchase_price * $qty;
                         $productStock->save();
                         $qty = 0;
-                        
+
                     }
                 }
 
                 $sellsItem = new SellItems();
                 $sellsItem->sell_id = $sell->id;
                 $sellsItem->product_id = $item['product_id'];
-                $sellsItem->product_name = $product->product_name;
+                $sellsItem->product_name = $product['product_name'];
                 $sellsItem->qty = $item['qty'];
                 $sellsItem->discount = $item['discount'];
                 $sellsItem->price = $item['price'];

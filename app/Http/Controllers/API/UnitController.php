@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Traits\ResponseTrait;
 use App\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class UnitController extends Controller
 {
+
+    use ResponseTrait;
 
     public function storeData(Request $request)
     {
@@ -25,10 +28,7 @@ class UnitController extends Controller
     public function index(Request $request)
     {
         $unit = Unit::orderBy('id', 'desc')->paginate($request->get('perPage'), ['*'], 'page');
-
-        return response()->json([
-            'data' => $unit
-        ], 202);
+        return $this->success($unit);
     }
 
     public function store(Request $request)
@@ -38,42 +38,24 @@ class UnitController extends Controller
         ]);
 
         if ($validatedData->fails()) {
-            return response()->json([
-                'data' => [
-                    'error' => $validatedData->errors()->toArray()
-                ]
-            ], 422);
+            return $this->failure($validatedData->errors()->toArray());
         }
-
 
         try {
             $this->storeData($request);
-            return response()->json([
-                'data' => [
-                    'message' => 'Unit saved successfully'
-                ]
-            ], 200);
+            return $this->success(null, 'Inserted successfully');
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return $this->failure($th->getMessage());
         }
     }
 
     public function getAll()
     {
         try {
-            $unit = Unit::select('unit_name','id')->orderBy('id', 'desc')->where('store_id',1)->get()->map->formatSelect();
-            return response()->json(
-                [
-                    'data' => $unit
-                ], 200
-            );
+            $unit = Unit::select('unit_name', 'id')->orderBy('id', 'desc')->where('store_id', 1)->get()->map->formatSelect();
+            return $this->success($unit);
         } catch (\Throwable $th) {
-            return response()->json(
-                [
-                    'error' => $th->getMessage()
-                ],
-                500
-            );
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -81,12 +63,9 @@ class UnitController extends Controller
     {
         try {
             $unit = Unit::find($id);
-
-            return response()->json([
-                'data' => $unit
-            ], 200);
+            return $this->success($unit);
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -94,12 +73,9 @@ class UnitController extends Controller
     {
         try {
             $this->storeData($request);
-
-            return response()->json([
-                'message' => 'Unit Updated Successfully'
-            ], 200);
+            return $this->success(null, 'Updated Successfully');
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -108,14 +84,9 @@ class UnitController extends Controller
         try {
             $unit = Unit::find($id);
             $unit->delete();
-
-            return response()->json([
-                'data' => [
-                    'message' => 'Unit Deleted Successfully'
-                ]
-            ], 200);
+            return $this->success(null, 'Deleted Successfully');
         } catch (\Throwable $th) {
-            return response()->json($th, 500);
+            return $this->failure($th->getMessage());
         }
     }
 
@@ -123,11 +94,9 @@ class UnitController extends Controller
     {
         try {
             $unit = Unit::where('unit_name', 'like', '%' . $request->search . '%')->orderBy('id', 'desc')->paginate($request->get('perPage'), ['*'], 'page');
-            return response()->json([
-                'data' => $unit
-            ], 202);
+            return $this->success($unit);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->failure($th->getMessage());
         }
     }
 }
