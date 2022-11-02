@@ -39,7 +39,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/store-customer', 'API\CustomerController@store');
     Route::post('/edit-customer', 'API\CustomerController@edit');
     Route::get('/delete-customer/{id}', 'API\CustomerController@delete');
-    Route::get('/get-previous-due/{id}','API\CustomerController@getPreviousDue');
+    Route::get('/get-previous-due/{id}', 'API\CustomerController@getPreviousDue');
 
     /**
      * Product
@@ -75,7 +75,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/delete-account/{id}', 'API\AccountController@delete');
     Route::post('/create-account', 'API\AccountController@create');
     Route::post('/edit-account', 'API\AccountController@edit');
-    Route::post('/edit-account', 'API\AccountController@edit');
+    Route::get('/get-total-balance', 'API\AccountController@getTotalBalance');
+    Route::post('/add-amount', 'API\AccountController@addAmount');
+    Route::post('/widthdraw-amount', 'API\AccountController@widthdrawAmount');
+    Route::get('/get-all-transection', 'API\AccountController@getAllTransection');
 
     /**
      * Brand

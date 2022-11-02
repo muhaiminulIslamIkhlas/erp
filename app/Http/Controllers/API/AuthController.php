@@ -22,7 +22,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'error' => 'Invalid Credentials'
+            'message' => 'Invalid Credentials'
         ], Response::HTTP_UNAUTHORIZED);
     }
 
